@@ -35,7 +35,7 @@ class TurretController:
         self.Usart.write('1LOG IN\r\n'.encode())
         current_response = self.Usart.readline()
         
-        if current_response == b'LOG +\r\n':
+        if current_response == b'1LOG +\r\n':
             print("LOG IN successful!")
         else:
             print(f"Login failed. Response: {current_response}")
@@ -125,6 +125,16 @@ def test_run():
     try:
         controller = TurretController()
         
+        # Test check_if_log_in
+        print("\n--- Testing check_if_log_in ---")
+        is_logged_in = controller.check_if_log_in()
+        print(f"Login status: {is_logged_in}")
+        
+        # Test check_position
+        print("\n--- Testing check_position ---")
+        current_position = controller.check_position()
+        print(f"Current position: {current_position}")
+        
         t.sleep(0.5)
         # move the six-place nosepiece to position 1
         controller.turn_to_position(1)
@@ -137,15 +147,11 @@ def test_run():
         # move the six-place nosepiece to position 3
         controller.turn_to_position(3)
         
-        # read back the acknowledgements
-        ack = controller.Usart.readline()
-        print(ack)
-
-        t.sleep(0.5)
-
-        ack = controller.Usart.readline()
-        print(ack)
-
+        # Test check_position again after moving
+        print("\n--- Testing check_position after movement ---")
+        new_position = controller.check_position()
+        print(f"Position after movement: {new_position}")
+        
         print("Write done")
         
         controller.close()
